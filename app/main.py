@@ -1,13 +1,13 @@
 from fastapi import FastAPI
-from app.routers import items
+from pydantic import BaseModel
+from typing import Optional
 
-app = FastAPI(
-    title="FastAPI Application",
-    description="A sample FastAPI application with automated deployment",
-    version="1.0.0"
-)
+app = FastAPI()
 
-app.include_router(items.router)
+class Item(BaseModel):
+    name: str
+    price: float
+    description: Optional[str] = None
 
 @app.get("/")
 def read_root():
@@ -16,3 +16,7 @@ def read_root():
 @app.get("/health")
 def health_check():
     return {"status": "healthy"}
+
+@app.post("/items")
+def create_item(item: Item):
+    return item
